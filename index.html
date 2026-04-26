@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SPOOKYCORE Playlist Shrine</title>
+  <style>
+    :root {
+      --bg:#07070d; --ink:#f7f2ff; --lav:#caa7ff; --pink:#ff9ad6; --cyan:#7de7ff;
+      --bone:#f2ece8; --blood:#d33556; --glass:rgba(255,255,255,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;color:var(--ink);font-family:Inter,system-ui,sans-serif;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(202,167,255,.22), transparent 35%),
+        radial-gradient(circle at 80% 5%, rgba(125,231,255,.16), transparent 32%),
+        linear-gradient(160deg,#05050a 0%,#0c0715 45%,#13091f 100%);
+      min-height:100vh;
+    }
+    body::before{
+      content:"";position:fixed;inset:0;pointer-events:none;opacity:.15;
+      background:repeating-linear-gradient(0deg,transparent 0 3px, rgba(255,255,255,.06) 3px 4px);
+      mix-blend-mode:screen;
+    }
+    .altar{max-width:1200px;margin:auto;padding:2rem 1rem 4rem}
+    .halo{border:1px solid rgba(255,255,255,.22);border-radius:22px;padding:1.2rem;background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.02));backdrop-filter: blur(8px);box-shadow:0 0 30px rgba(202,167,255,.25), inset 0 0 30px rgba(125,231,255,.08)}
+    h1,h2,h3{font-family:'Cormorant Garamond', Georgia, serif;letter-spacing:.04em}
+    h1{font-size:clamp(2.1rem,5vw,4rem);margin:.2rem 0;color:var(--bone);text-shadow:0 0 18px rgba(255,154,214,.4)}
+    h2{font-size:1.45rem;color:var(--lav);margin:2rem 0 .8rem}
+    .sys{font-size:.76rem;letter-spacing:.15em;color:var(--cyan);text-transform:uppercase}
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:1rem}
+    .card{position:relative;border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:.9rem;background:var(--glass);overflow:hidden}
+    .card::after{content:"";position:absolute;inset:auto -30% -65% -30%;height:110px;background:radial-gradient(circle, rgba(255,154,214,.35), transparent 70%)}
+    details{margin:0}
+    summary{cursor:pointer;list-style:none;font-weight:600}
+    summary::-webkit-details-marker{display:none}
+    .chip{display:inline-block;padding:.22rem .5rem;border:1px solid rgba(255,255,255,.25);border-radius:999px;font-size:.72rem;margin:.2rem .2rem 0 0}
+    .songs{max-height:280px;overflow:auto;padding-right:.3rem;margin-top:.6rem}
+    .song{padding:.38rem 0;border-bottom:1px dashed rgba(255,255,255,.15);font-size:.92rem}
+    .song small{display:block;color:#d8c8ea}
+    .trivia{margin-top:.35rem;padding:.4rem;border-left:2px solid var(--blood);font-size:.8rem;background:rgba(211,53,86,.12)}
+    iframe{width:100%;height:80px;border:none;border-radius:12px;margin-top:.55rem;opacity:.95}
+    a{color:var(--cyan)}
+    .divider{height:2px;margin:1.4rem 0;background:linear-gradient(90deg,transparent,var(--pink),var(--cyan),transparent);filter:drop-shadow(0 0 6px var(--pink));}
+    .signals li{margin-bottom:.5rem}
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <main class="altar">
+    <section class="halo">
+      <p class="sys">Invocation // Sacred-Tech Archive</p>
+      <h1>The 10/10 Relic Sequence</h1>
+      <p>A SPOOKYCORE interface for a deeply algorithmic, self-referential playlist. Chapter boundaries were inferred from audio-feature drift + artist/genre discontinuities, then constrained to ritual lengths of 6–15 tracks.</p>
+    </section>
+
+    <div class="divider"></div>
+
+    <section>
+      <h2>Signals</h2>
+      <ul id="signals" class="signals card"></ul>
+    </section>
+
+    <section>
+      <h2>Artifacts (Chapters)</h2>
+      <div id="chapters" class="grid"></div>
+    </section>
+
+    <section>
+      <h2>Transmission</h2>
+      <div class="card">
+        <p>This shrine can stream chapter openers through Spotify embeds. Full time-syncing would require Spotify Web Playback SDK auth + premium token flow, which we can add later if you want true chapter timeline transport controls.</p>
+      </div>
+    </section>
+  </main>
+
+<script>
+const overlap = (a,b)=>{
+  const stop=new Set(['the','a','an','and','of','to','in','on','for','pt','part','feat','remaster']);
+  const tok=s=>new Set((s.toLowerCase().match(/[a-z0-9']+/g)||[]).filter(t=>!stop.has(t)));
+  const ta=tok(a), tb=tok(b);
+  return [...ta].filter(x=>tb.has(x));
+};
+
+fetch('./chapters.json').then(r=>r.json()).then(data=>{
+  const ch = data.chapters;
+  const signals = document.getElementById('signals');
+  const chapters = document.getElementById('chapters');
+
+  const lengths = ch.map(c=>c.count);
+  signals.innerHTML = `
+    <li><strong>Total tracks:</strong> ${data.totalSongs}</li>
+    <li><strong>Total chapters:</strong> ${ch.length}</li>
+    <li><strong>Chapter size range:</strong> ${Math.min(...lengths)}–${Math.max(...lengths)} songs</li>
+    <li><strong>Median chapter size:</strong> ${lengths.slice().sort((a,b)=>a-b)[Math.floor(lengths.length/2)]} songs</li>
+  `;
+
+  ch.forEach((c, idx)=>{
+    const prev = idx>0 ? ch[idx-1] : null;
+    const transition = prev ? overlap(prev.closing, c.opening) : [];
+
+    const card=document.createElement('article');
+    card.className='card';
+    card.innerHTML=`
+      <details>
+        <summary>
+          <span class="sys">Chapter ${String(c.chapter).padStart(2,'0')}</span>
+          <h3 style="margin:.2rem 0">${c.title}</h3>
+          <div class="chip">tracks ${c.range[0]}–${c.range[1]}</div>
+          <div class="chip">${c.count} songs</div>
+          <div class="chip">tempo ${c.vibe.tempo}</div>
+          <div class="chip">energy ${c.vibe.energy}</div>
+        </summary>
+        <p><strong>Opens:</strong> ${c.opening}<br><strong>Closes:</strong> ${c.closing}</p>
+        ${transition.length ? `<p class="sys">self-aware handoff token: ${transition.join(', ')}</p>`:''}
+        ${c.songs[0].embed ? `<iframe src="${c.songs[0].embed}" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>`:''}
+        <div class="songs">
+          ${c.songs.map(s=>`
+            <div class="song">${s.pos}. ${s.track}<small>${s.artist}</small>
+              ${s.trivia ? `<div class="trivia">✦ ${s.trivia.note} <a href="${s.trivia.source}" target="_blank" rel="noreferrer">source</a></div>`:''}
+            </div>`).join('')}
+        </div>
+      </details>
+    `;
+    chapters.appendChild(card);
+  });
+});
+</script>
+</body>
+</html>
