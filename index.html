@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PLAYLIST OF 10s // SPOOKYCORE CHAPTERS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="aurora"></div>
+  <header class="altar">
+    <p class="label">TRANSMISSION::PLAYLISTOF10S</p>
+    <h1>SPOOKYCORE CHAPTER ATLAS</h1>
+    <p class="subtitle">A glitched devotional map of 605 ten-out-of-ten songs, segmented into ritual chapters (6–15 tracks each).</p>
+  </header>
+
+  <main>
+    <section class="panel" id="invocation">
+      <h2>Invocation</h2>
+      <p>
+        I ignored upload timestamps and cut the arc by sonic continuity: repeating artists, genre echoes, tempo/energy drift, and emotional slope.
+        Chapter seams mark deliberate mood pivots or self-referential callbacks.
+      </p>
+      <p id="stats"></p>
+    </section>
+
+    <section class="panel" id="signals">
+      <h2>Signals / Trivia Relics</h2>
+      <div class="signals-grid">
+        <article>
+          <h3>Beatles Ghost Stitch</h3>
+          <p>"Free as a Bird" started as a 1977 John Lennon home demo, then the surviving Beatles completed it for <em>Anthology 1</em> in 1995.</p>
+          <a href="https://en.wikipedia.org/wiki/Free_as_a_Bird" target="_blank" rel="noreferrer">source</a>
+        </article>
+        <article>
+          <h3>Wildflower Fractal Logic</h3>
+          <p><em>Wildflower</em> was built over 16 years, and its tracks are described as sample-based end-to-end—perfectly matching your recursive playlist DNA.</p>
+          <a href="https://en.wikipedia.org/wiki/Wildflower_(The_Avalanches_album)" target="_blank" rel="noreferrer">source</a>
+        </article>
+        <article>
+          <h3>Rally Cry Node</h3>
+          <p>Kendrick’s “Alright” became a major Black Lives Matter rallying chant; in this list it often acts like a resolve-reset checkpoint.</p>
+          <a href="https://en.wikipedia.org/wiki/Alright_(Kendrick_Lamar_song)" target="_blank" rel="noreferrer">source</a>
+        </article>
+        <article>
+          <h3>PinkPantheress Link-Up</h3>
+          <p>“Boy’s a Liar Pt. 2” became both PinkPantheress and Ice Spice’s first US top-10 moment—an internet-age crossover flashpoint.</p>
+          <a href="https://en.wikipedia.org/wiki/Boy%27s_a_Liar_Pt._2" target="_blank" rel="noreferrer">source</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="artifacts">
+      <h2>Artifacts (Chapters)</h2>
+      <div id="chapters"></div>
+    </section>
+  </main>
+
+  <template id="chapter-template">
+    <details class="chapter-card">
+      <summary>
+        <span class="chapter-title"></span>
+        <span class="chapter-meta"></span>
+      </summary>
+      <p class="chapter-note"></p>
+      <div class="embed-wrap"></div>
+      <ol class="track-list"></ol>
+    </details>
+  </template>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>
